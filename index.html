@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tekken Coin Exchange | Iron Fist Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;900&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #000; 
+            color: #fff; 
+            overflow-x: hidden;
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.8), #000), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+        }
+        
+        .tekken-font { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: -1px; }
+
+        /* Combat Styling */
+        .fist-glow { box-shadow: 0 0 30px rgba(220, 38, 38, 0.3); border: 1px solid #dc2626; }
+        .red-gradient { background: linear-gradient(90deg, #7f1d1d 0%, #dc2626 100%); }
+        
+        /* Tab Transitions */
+        .tab-pane { display: none; animation: slideIn 0.4s ease-out forwards; }
+        .active-pane { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Tekken Range Slider */
+        input[type=range] { -webkit-appearance: none; background: #262626; height: 12px; border-radius: 0px; border-left: 4px solid #dc2626; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 30px; width: 15px; background: #fff; cursor: pointer; border: 2px solid #dc2626; }
+    </style>
+</head>
+<body>
+
+    <div class="w-full bg-red-600 text-black py-1 overflow-hidden">
+        <marquee class="text-xs font-black tracking-widest uppercase">
+            New Stock: Heihachi Commemorative Coins Available... King's Wrestling Gear Discounted... Next Tournament in 48 Hours... 
+        </marquee>
+    </div>
+
+    <nav class="flex justify-between items-center p-6 border-b border-white/10 bg-black/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="tekken-font text-3xl italic tracking-tighter"><span class="text-red-600">Tekken</span>Shop</div>
+        <div class="flex gap-4">
+            <button onclick="show('coins')" id="btn-coins" class="tekken-font text-sm bg-red-600 px-6 py-2 skew-x-[-12deg]">Exchange</button>
+            <button onclick="show('training')" id="btn-training" class="tekken-font text-sm border border-white/20 px-6 py-2 skew-x-[-12deg] hover:bg-white hover:text-black transition">Training</button>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-6 py-12">
+
+        <div id="coins-pane" class="tab-pane active-pane">
+            <div class="mb-16 border-l-8 border-red-600 pl-6">
+                <h1 class="tekken-font text-7xl md:text-9xl italic leading-none">Fight <br><span class="text-red-600">Currency</span></h1>
+                <p class="text-zinc-500 font-bold mt-4 uppercase tracking-widest">Exchange Rate: 1 Coin = ₹5</p>
+            </div>
+
+            <div class="bg-zinc-900/50 p-10 rounded-sm fist-glow relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-5 text-9xl font-black italic">拳</div>
+                
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <label class="tekken-font text-xl mb-8 block">Select Coin Quantity</label>
+                        <input type="range" id="qty" min="10" max="2000" step="10" value="100" class="w-full mb-4" oninput="calculate(this.value)">
+                        <div class="flex justify-between text-zinc-500 font-black text-xs">
+                            <span>MIN: 10</span>
+                            <span>MAX: 2000</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center md:text-right border-t md:border-t-0 md:border-l border-white/10 pt-8 md:pt-0 md:pl-8">
+                        <div class="text-zinc-500 text-xs font-black uppercase mb-2 tracking-tighter">Total Price (INR)</div>
+                        <div class="text-8xl tekken-font italic text-white leading-none mb-6" id="price">₹500</div>
+                        <button onclick="buy()" class="w-full red-gradient py-5 tekken-font text-2xl italic hover:brightness-125 transition active:scale-95 shadow-lg">
+                            Get Coins Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="training-pane" class="tab-pane">
+            <div class="max-w-2xl mx-auto bg-zinc-900/80 p-10 border-t-4 border-red-600">
+                <h2 class="tekken-font text-4xl mb-8 italic">Book <span class="text-red-600">Coaching</span></h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label class="text-xs font-black text-zinc-500 uppercase block mb-2">Select Focus</label>
+                        <select id="focus" class="w-full bg-black border border-white/10 p-4 font-bold text-white outline-none focus:border-red-600">
+                            <option>Mishima Style Mastery (EWGF Training)</option>
+                            <option>Frame Data & Punish Guides</option>
+                            <option>Combo Optimization (Wall/Floor Break)</option>
+                            <option>Ranked Push Assistance</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-black text-zinc-500 uppercase block mb-2">Character Choice</label>
+                        <input type="text" id="char" placeholder="e.g., Kazuya, Jin, Reina" class="w-full bg-black border border-white/10 p-4 font-bold outline-none focus:border-red-600">
+                    </div>
+
+                    <button onclick="bookCoaching()" class="w-full bg-white text-black py-5 tekken-font text-xl italic hover:bg-red-600 hover:text-white transition">
+                        Check Availability
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // SETTINGS
+        const WHATSAPP = "91XXXXXXXXXX"; // Your number
+        const RATE = 5;
+
+        function calculate(val) {
+            document.getElementById('price').innerText = `₹${val * RATE}`;
+        }
+
+        function buy() {
+            const coins = document.getElementById('qty').value;
+            const price = coins * RATE;
+            const msg = `TEKKEN SHOP ORDER:\nCoins: ${coins}\nAmount: ₹${price}\nI am ready to pay.`;
+            window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function bookCoaching() {
+            const focus = document.getElementById('focus').value;
+            const char = document.getElementById('char').value;
+            const msg = `TEKKEN COACHING REQUEST:\nCharacter: ${char}\nFocus: ${focus}\nLet me know the timing.`;
+            window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function show(pane) {
+            document.getElementById('coins-pane').classList.remove('active-pane');
+            document.getElementById('training-pane').classList.remove('active-pane');
+            document.getElementById(pane + '-pane').classList.add('active-pane');
+
+            // Button Styles
+            document.getElementById('btn-coins').className = pane === 'coins' ? 'tekken-font text-sm bg-red-600 px-6 py-2 skew-x-[-12deg]' : 'tekken-font text-sm border border-white/20 px-6 py-2 skew-x-[-12deg]';
+            document.getElementById('btn-training').className = pane === 'training' ? 'tekken-font text-sm bg-red-600 px-6 py-2 skew-x-[-12deg]' : 'tekken-font text-sm border border-white/20 px-6 py-2 skew-x-[-12deg]';
+        }
+    </script>
+</body>
+</html>
